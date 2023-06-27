@@ -152,10 +152,6 @@ void setupMqtt()
 {
   Serial.println("Setting up MQTT.");
 
-  Serial.println(MQTT_BROKER_HOST);
-  Serial.println(MQTT_BROKER_PASSWORD);
-  Serial.println(MQTT_BROKER_USERNAME);
-
   mqtt.onConnected(onMqttConnected);
   mqtt.begin(mqttBrokerAddress, mqttBrokerUserUsername, mqttBrokerUserPassword);
 
