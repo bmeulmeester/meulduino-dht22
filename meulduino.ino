@@ -31,9 +31,9 @@ WiFiClient client;
 HADevice device;
 HAMqtt mqtt(client, device);
 
-HASensorNumber temperatureSensor("meulduino_temperature_sensor");
+HASensorNumber temperatureSensor("meulduino_temperature_sensor", HANumber::PrecisionP1);
 HASensorNumber humiditySensor("meulduino_humidity_sensor");
-HASensorNumber heatIndexSensor("meulduino_heat_index_sensor");
+HASensorNumber heatIndexSensor("meulduino_heat_index_sensor", HANumber::PrecisionP1);
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -45,7 +45,7 @@ const uint8_t mqttBrokerPortTls = 1883;
 const char* mqttBrokerUserUsername = MQTT_BROKER_USERNAME;
 const char* mqttBrokerUserPassword = MQTT_BROKER_PASSWORD;
 
-const int sampleRateInMillis = 10000;
+const int sampleRateInMillis = 1000;
 
 const byte mac[WL_MAC_ADDR_LENGTH] = { 0x24, 0x6F, 0x28, 0x7A, 0xCC, 0x00 };
 
@@ -135,7 +135,6 @@ void setupHumiditySensor()
   humiditySensor.setUnitOfMeasurement("%");
   humiditySensor.setName("Meulduino Humidity Sensor");
   humiditySensor.setIcon("mdi:water-percent");
-
 }
 
 void setupHeatIndexSensor()
@@ -191,8 +190,12 @@ void loop()
       return; // We don't want 0 values or read errors reported.
     }
 
-    temperatureSensor.setValue(temperature);
-    humiditySensor.setValue(humidity);
-    heatIndexSensor.setValue(heatIndex);
+    HANumeric temperatureNumeric(temperature, HANumber::PrecisionP1);
+    HANumeric humidityNumeric(humidity, HANumber::PrecisionP0);
+    HANumeric heatIndexNumeric(heatIndex, HANumber::PrecisionP1);
+  
+    temperatureSensor.setValue(temperatureNumeric, true);
+    humiditySensor.setValue(humidityNumeric, true);
+    heatIndexSensor.setValue(heatIndexNumeric, true);
   }
 }
